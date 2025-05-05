@@ -1,0 +1,189 @@
+/* Definir colores personalizados */
+:root {
+  --primary-color: #3369A4;
+  --secondary-color: #0A0F0D;
+  --accent-color: #8C1C13;
+  --bg-color: #f0f0f0;
+  --text-color: #333333;
+}
+
+/* Aplicar los colores */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.navbar {
+  background-color: var(--primary-color) !important;
+}
+
+.logo {
+  width: 30%;
+}
+
+.bg-black {
+  background: var(--secondary-color);
+}
+
+.card.custom-card,
+.card-header.custom-header {
+  background-color: var(--bg-color);
+}
+
+.navbar .nav-link {
+  color: var(--bg-color) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:active,
+.navbar .nav-link:focus {
+  color: var(--accent-color) !important;
+}
+
+.dropdown-menu .dropdown-item {
+  color: var(--text-color);
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:active,
+.dropdown-menu .dropdown-item:focus {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+
+.navbar-brand {
+  color: var(--bg-color) !important;
+}
+
+.navbar-brand:hover,
+.navbar-brand:active,
+.navbar-brand:focus {
+  color: var(--accent-color) !important;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: var(--bg-color);
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
+
+.btn-secondary {
+  color: var(--secondary-color);
+  background-color: transparent;
+  border: 2px solid var(--secondary-color);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:focus {
+  background-color: var(--secondary-color);
+  color: var(--bg-color);
+}
+
+.btn-success {
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+}
+
+/* Mensajes */
+.alert-success {
+  background-color: #D1E7DD;
+  color: #0F5132;
+  border-left: 5px solid #198754;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-danger {
+  background-color: #F8D7DA;
+  color: #842029;
+  border-left: 5px solid #DC3545;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-warning {
+  background-color: #FFF3CD;
+  color: #664D03;
+  border-left: 5px solid #FFC107;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Espaciado entre alertas */
+.alert {
+  margin-bottom: 15px;
+  padding: 12px 20px;
+}
+
+/* Cierre del botón */
+.btn-close {
+  background: transparent;
+  border: none;
+  opacity: 0.8;
+}
+
+.btn-close:hover,
+.btn-close:active,
+.btn-close:focus {
+  opacity: 1;
+}
+
+.card-body {
+  line-height: 1.6;
+  text-align: justify;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+/* Efectos SOLO para botones con fondo */
+button,
+input[type="submit"] {
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover,
+button:active,
+button:focus,
+input[type="submit"]:hover,
+input[type="submit"]:active,
+input[type="submit"]:focus {
+  transform: scale(0.98); /* Efecto de presión solo en botones */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Eliminar efecto en enlaces y botones de texto */
+a {
+  transition: none;  /* No se escalarán */
+}
+
+a:hover,
+a:active,
+a:focus {
+  transform: none;
+  box-shadow: none;
+}

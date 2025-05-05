@@ -1,0 +1,61 @@
+<div class="container mt-5">
+    <h1 class="text-center">Itinerario del Día</h1>
+    
+    {{#if hayActividades}}
+        <div class="row mt-4">
+            {{#each actividades}}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm p-3 text-bg-primary h-100" 
+                         role="button" 
+                         data-bs-toggle="modal" 
+                         data-bs-target="#modalActividad"
+                         onclick="mostrarModal('{{nombre}}', '{{descripcion}}', '{{encargado}}', '{{imagen}}')">
+                        <div class="card-body">
+                            <h5 class="card-title">{{hora}}</h5>
+                            <p class="card-text fw-bold">{{nombre}}</p>
+                            <p class="card-text">{{encargado}}</p>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <p class="text-center text-muted">No hay actividades programadas para hoy.</p>
+        <p class="text-center text-muted">Mantente al pendiente para las próximas actualizaciones!.</p>
+    {{/if}}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalActividad" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body d-flex align-items-start">
+                <div>
+                    <p id="modalDescripcion"></p>
+                    <p><strong>Encargado:</strong> <span id="modalEncargado"></span></p>
+                </div>
+                <img id="modalImagen" alt="Imagen del ponente" class="img-fluid ms-auto border rounded" style="max-width: 150px; height: auto;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarModal(nombre, descripcion, encargado, imagen) {
+    document.getElementById("modalTitulo").textContent = nombre;
+    document.getElementById("modalDescripcion").textContent = descripcion;
+    document.getElementById("modalEncargado").textContent = encargado;
+    
+    const modalImagen = document.getElementById("modalImagen");
+    if (imagen) {
+        modalImagen.src = imagen;
+        modalImagen.style.display = "block"; // Asegurar que sea visible
+    } else {
+        modalImagen.style.display = "none"; // Ocultamos si no hay imagen
+    }
+}
+</script>
