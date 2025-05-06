@@ -11,7 +11,6 @@ import { fileURLToPath } from "url";
 
 import { MONGODB_URI, PORT } from "./config.js";
 import indexRoutes from "./routes/index.routes.js";
-import notesRoutes from "./routes/notes.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js"; 
 import "./config/passport.js";
@@ -71,7 +70,6 @@ app.use((req, res, next) => {
 
 app.use(indexRoutes);
 app.use(authRoutes);
-app.use(notesRoutes);
 app.use(userRoutes);
 
 // static files
