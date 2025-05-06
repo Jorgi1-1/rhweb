@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-lg mt-5 custom-card rounded-4">
+        <div class="card-header text-center bg-primary text-white rounded-top-4 py-4">
+          <h1 class="h4 fw-bold">Registrarse</h1>
+        </div>
+
+        <div class="card-body px-4 py-4">
+          {{#each errors}}
+            <div class="alert alert-danger">{{text}}</div>
+          {{/each}}
+
+          <form action="/auth/signup" method="POST">
+            <div class="row">
+
+              <!-- Información general -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" name="name" class="form-control" placeholder="Nombre completo" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Confirmar Contraseña</label>
+                <input type="password" name="confirm_password" class="form-control" placeholder="********" required>
+              </div>
+
+              <!-- Campo oculto para fijar rol como 'employee' -->
+              <input type="hidden" name="role" value="employee">
+
+              <!-- Datos personales -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Edad</label>
+                <input type="number" name="age" class="form-control" placeholder="Edad" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="phone" class="form-control" placeholder="Número de contacto" required pattern="[0-9]+" maxlength="10">
+              </div>
+
+              <!-- Campos específicos para empleados -->
+              <div id="employeeFields" class="mt-4">
+                <h5 class="fw-bold text-primary">Información Laboral</h5>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Departamento</label>
+                  <input type="text" name="department" class="form-control" placeholder="Ej. Recursos Humanos" required>
+                </div>
+              </div>
+
+              <!-- Botón de registro -->
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold">Registrarse</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="text-center my-3">
+          <p class="text-muted">¿Ya tienes una cuenta? 
+            <a href="/auth/signin" class="text-primary fw-bold">Inicia sesión</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
