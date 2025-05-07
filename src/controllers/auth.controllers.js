@@ -70,7 +70,7 @@ export const signup = async (req, res) => {
 
   // Ya no iniciar sesión automáticamente
   req.flash("success_msg", "Usuario registrado exitosamente.");
-  return res.redirect("/dashboard");
+  return res.redirect("/admin/users");
 };
 
 export const renderSigninForm = (req, res) => res.render("auth/signin");
