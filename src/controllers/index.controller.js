@@ -90,3 +90,41 @@ export const deleteUser = async (req, res) => {
     res.redirect("/admin/users");
   }
 };
+
+export const updateUserInfo = async (req, res) => {
+  try {
+    const { name, email, phone, age, role, baseSalary, bonuses, deductions } = req.body;
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      req.flash("error_msg", "Usuario no encontrado.");
+      return res.redirect("/admin/users");
+    }
+
+    // Actualizar datos generales
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+    user.age = age;
+    user.role = role;
+
+    // Actualizar información de pago
+    if (!user.payrollInfo) {
+      user.payrollInfo = {};
+    }
+
+    user.payrollInfo.baseSalary = baseSalary || 0;
+    user.payrollInfo.bonuses = bonuses || 0;
+    user.payrollInfo.deductions = deductions || 0;
+
+    await user.save();
+
+    req.flash("success_msg", "Información del usuario actualizada correctamente.");
+    res.redirect(`/user/${user._id}`);
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    req.flash("error_msg", "Error al actualizar la información del usuario.");
+    res.redirect("/admin/users");
+  }
+};

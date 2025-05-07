@@ -32,8 +32,18 @@ const hbs = exphbs.create({
   partialsDir: join(app.get("views"), "partials"),
   extname: ".hbs",
   runtimeOptions: {
-    allowProtoPropertiesByDefault: true, // Habilita acceso a propiedades heredadas
+    allowProtoPropertiesByDefault: true,
   },
+  helpers: {
+    ifCond: function (v1, v2, options) {
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    },
+    calcNetSalary: function (payroll) {
+      if (!payroll) return 0;
+      const { baseSalary = 0, bonuses = 0, deductions = 0 } = payroll;
+      return baseSalary + bonuses - deductions;
+    },
+  }
 });
 app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");
