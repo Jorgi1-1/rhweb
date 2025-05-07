@@ -27,29 +27,27 @@ const ScheduleSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema(
   {
-    // 🧍 Datos básicos
+    // Datos básicos
     name: { type: String, trim: true, required: true },
     email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
 
-    // 👥 Rol en la empresa
+    // Rol en la empresa
     role: {
       type: String,
       enum: ["admin", "supervisor", "employee"],
       required: true,
     },
 
-    // 📱 Datos comunes
+    // Datos comunes
     phone: { type: String, trim: true },
     age: { type: Number },
 
-    // 👔 Datos laborales (sólo para supervisores y empleados)
+    // Datos laborales (sólo para supervisores y empleados)
     payrollInfo: PayrollSchema,
     attendanceLogs: [AttendanceLogSchema],
     schedule: [ScheduleSchema],
     
-    // 📊 Solo para Admins/Directores
-    isSystemAdmin: { type: Boolean, default: false },
   },
   {
     timestamps: true,
@@ -57,7 +55,7 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// 🔐 Métodos de seguridad
+// Métodos de seguridad
 UserSchema.methods.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);

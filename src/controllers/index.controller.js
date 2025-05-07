@@ -14,11 +14,9 @@ export const renderScanner = (req, res) => {
   res.render("scanner");
 };
 
-// QUITAR
-export const renderHospedaje = (req, res) => {
-  res.render("wip"); 
+export const renderRegistro = (req, res) => {
+  res.render("admin/userCreate"); 
 };
-// QUITAR
 
 export const renderDashboard = (req, res) => {
   const role = req.user.role;

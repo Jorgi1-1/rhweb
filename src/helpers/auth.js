@@ -8,10 +8,10 @@ export const isAuthenticated = (req, res, next) => {
 };
 
 export const isAdmin = (req, res, next) => {
-  if (req.user && req.user.admin) {
-    return next(); // Si el usuario es admin, pasa a la siguiente middleware o ruta
+  if (req.user && req.user.role === "admin") {
+    return next(); // Si el rol es admin, continúa
   } else {
     req.flash("error_msg", "No tienes permisos para acceder a esta página.");
-    res.redirect("/"); // Redirige a la página principal si no es admin
+    return res.redirect("/dashboard"); // Redirige al dashboard u otra ruta segura
   }
 };

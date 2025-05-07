@@ -1,24 +1,19 @@
 import User from "../models/User.js";
 import passport from "passport";
-import { sendQRCodeEmail } from "../libs/emailService.js";
 
 export const renderSignUpForm = (req, res) => res.render("auth/signup");
 
 export const signup = async (req, res) => {
   let errors = [];
-  const { name,
+  const {
+    name,
     email,
     password,
     confirm_password,
-    group,
     role,
     age,
-    phone,
-    allergies,
-    bloodType,
-    shirtSize,
-    emergency_name,
-    emergency_phone } = req.body;
+    phone
+  } = req.body;
 
   const normalizedEmail = email?.toLowerCase().trim();
 
@@ -34,6 +29,10 @@ export const signup = async (req, res) => {
     errors.push({ text: "Error: Email inválido." });
   }
 
+  if (!["admin", "supervisor", "employee"].includes(role)) {
+    errors.push({ text: "Rol inválido." });
+  }
+
   if (errors.length > 0) {
     return res.render("auth/signup", {
       errors,
@@ -41,54 +40,37 @@ export const signup = async (req, res) => {
       email,
       password,
       confirm_password,
-      group,
       role,
       age,
       phone,
-      allergies,
-      bloodType,
-      shirtSize,
-      emergency_name,
-      emergency_phone,
     });
   }
 
-  // Buscar el email insensible a mayúsculas
   const userFound = await User.findOne({ email: normalizedEmail });
   if (userFound) {
     req.flash("error_msg", "El email ya está en uso.");
     return res.redirect("/auth/signup");
   }
 
-  // Guardar el nuevo usuario
   const newUser = new User({
     name,
     email: normalizedEmail,
     password,
-    group,
     role,
     age,
     phone,
-    allergies,
-    bloodType,
-    shirtSize,
-    emergencyContact: { name: emergency_name, phone: emergency_phone },
+    // Los siguientes campos quedan vacíos por defecto, si aplica:
+    payrollInfo: undefined,
+    attendanceLogs: [],
+    schedule: []
   });
+
   newUser.password = await newUser.encryptPassword(password);
   await newUser.save();
 
-  await sendQRCodeEmail(newUser.email, newUser.qrCode);
-
-  // Iniciar sesión automáticamente después del registro
-  req.login(newUser, (err) => {
-    if (err) {
-      console.error("Error al iniciar sesión después del registro:", err);
-      req.flash("error_msg", "Hubo un problema al iniciar sesión.");
-      return res.redirect("/auth/signin");
-    }
-    req.flash("success_msg", "Registro exitoso.");
-    return res.redirect("/infoevento");
-  });
+  // Ya no iniciar sesión automáticamente
+  req.flash("success_msg", "Usuario registrado exitosamente.");
+  return res.redirect("/dashboard");
 };
 
 export const renderSigninForm = (req, res) => res.render("auth/signin");
