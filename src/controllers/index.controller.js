@@ -1,3 +1,5 @@
+import User from "../models/User.js"; 
+
 export const renderInfo = (req, res) => {
   res.render("schedule");
 };
@@ -16,6 +18,17 @@ export const renderScanner = (req, res) => {
 
 export const renderRegistro = (req, res) => {
   res.render("admin/userCreate"); 
+};
+
+export const renderUsers = async (req, res) => {
+  try {
+    const users = await User.find().lean(); // .lean() convierte los documentos de Mongoose a objetos planos
+    res.render("admin/users", { users });
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    req.flash("error_msg", "No se pudieron cargar los usuarios.");
+    res.redirect("/dashboard");
+  }
 };
 
 export const renderDashboard = (req, res) => {

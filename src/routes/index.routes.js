@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { renderIndex, renderAbout, renderInfo, renderScanner, renderDashboard, renderRegistro} from "../controllers/index.controller.js";
+import { renderIndex, renderAbout, renderInfo, renderScanner, renderDashboard, renderRegistro, renderUsers} from "../controllers/index.controller.js";
 import { isAuthenticated, isAdmin } from "../helpers/auth.js";
 
 const router = Router();
@@ -12,6 +12,6 @@ router.get("/scanner", isAuthenticated, isAdmin, renderScanner);
 router.get("/infoevento", isAuthenticated, isAdmin, renderInfo); 
 router.get("/dashboard", isAuthenticated, renderDashboard);
 router.get("/registerUser", isAuthenticated, isAdmin, renderRegistro);
-
+router.get("/admin/users", isAuthenticated, isAdmin, renderUsers);
   
 export default router;
