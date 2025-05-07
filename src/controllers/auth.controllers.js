@@ -96,7 +96,7 @@ export const renderSigninForm = (req, res) => res.render("auth/signin");
 export const signin = (req, res, next) => {
   req.body.email = req.body.email?.toLowerCase().trim();
   passport.authenticate("local", {
-    successRedirect: "/infoevento",
+    successRedirect: "/dashboard", 
     failureRedirect: "/auth/signin",
     failureFlash: true,
   })(req, res, next);

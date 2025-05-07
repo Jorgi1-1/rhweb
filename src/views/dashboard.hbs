@@ -1,0 +1,79 @@
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold">Panel de Control</h1>
+    <p class="text-muted">Bienvenido, {{user.name}} ({{user.role}})</p>
+  </div>
+
+  {{!-- ADMIN DASHBOARD --}}
+  {{#if (eq user.role "admin")}}
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-primary shadow rounded-4 p-3">
+          <h5 class="card-title">Empleados registrados</h5>
+          <p class="display-6">{{metrics.totalEmployees}}</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success shadow rounded-4 p-3">
+          <h5 class="card-title">Total pagado este mes</h5>
+          <p class="display-6">${{metrics.totalPayments}}</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-warning shadow rounded-4 p-3">
+          <h5 class="card-title">Supervisores activos</h5>
+          <p class="display-6">{{metrics.activeSupervisors}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <a href="/admin/users" class="btn btn-outline-primary">Gestionar Usuarios</a>
+    </div>
+  {{/if}}
+
+  {{!-- SUPERVISOR DASHBOARD --}}
+  {{#if (eq user.role "supervisor")}}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-primary">
+          <h5 class="card-title">Agendas del equipo</h5>
+          <ul class="list-group">
+            {{#each teamSchedules}}
+              <li class="list-group-item">{{this.name}} – {{this.status}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-success">
+          <h5 class="card-title">Asistencia del equipo</h5>
+          <p>Asistencias esta semana: {{metrics.attendanceThisWeek}}</p>
+          <a href="/supervisor/attendance" class="btn btn-success mt-2">Ver asistencias</a>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+
+  {{!-- EMPLOYEE DASHBOARD --}}
+  {{#if (eq user.role "employee")}}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-info">
+          <h5 class="card-title">Mi agenda</h5>
+          <ul class="list-group">
+            {{#each userSchedule}}
+              <li class="list-group-item">{{this.date}} – {{this.task}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-secondary">
+          <h5 class="card-title">Asistencia personal</h5>
+          <p>Días asistidos este mes: {{metrics.daysPresent}}</p>
+          <a href="/employee/attendance" class="btn btn-info mt-2">Ver historial</a>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
