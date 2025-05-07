@@ -60,3 +60,33 @@ export const renderDashboard = (req, res) => {
     userSchedule: role === "employee" ? userSchedule : null,
   });
 };
+
+// Muestra el perfil de un usuario específico
+export const renderUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).lean();
+    if (!user) {
+      req.flash("error_msg", "Usuario no encontrado.");
+      return res.redirect("/admin/users");
+    }
+
+    res.render("admin/userProfile", { user });
+  } catch (error) {
+    console.error("Error al cargar perfil:", error);
+    req.flash("error_msg", "Error al cargar el perfil del usuario.");
+    res.redirect("/admin/users");
+  }
+};
+
+// Elimina a un usuario
+export const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    req.flash("success_msg", "Usuario eliminado correctamente.");
+    res.redirect("/admin/users");
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    req.flash("error_msg", "No se pudo eliminar el usuario.");
+    res.redirect("/admin/users");
+  }
+};
