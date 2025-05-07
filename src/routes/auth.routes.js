@@ -1,8 +1,6 @@
 import { Router } from "express";
 import {
-  renderSignUpForm,
   signup,
-  renderSigninForm,
   signin,
   logout,
 } from "../controllers/auth.controllers.js";
