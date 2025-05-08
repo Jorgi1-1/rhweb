@@ -20,11 +20,14 @@
           <span style="color: #8C1C13;">Inicia sesión para continuar.</span>
         </p>
 
-        {{#unless user}}  
-          <div class="mt-2 text-center">
+        <div class="mt-2 text-center">
+          {{#if user}}  
+            <a class="btn btn-primary btn-sm" href="/dashboard" role="button">Dashboard</a>
+          {{else}}
             <a class="btn btn-secondary btn-sm" href="/auth/signin" role="button">Iniciar sesión</a>
-          </div>
-        {{/unless}}
+          {{/if}}
+        </div>
+
       </div>
     </div>
   </div>
