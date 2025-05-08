@@ -43,6 +43,14 @@ const hbs = exphbs.create({
       const { baseSalary = 0, bonuses = 0, deductions = 0 } = payroll;
       return baseSalary + bonuses - deductions;
     },
+    helpers: {
+      ifCond: (v1, v2, options) => (v1 === v2 ? options.fn(this) : options.inverse(this)),
+      calcNetSalary: (payroll) => {
+        if (!payroll) return 0;
+        const { baseSalary = 0, bonuses = 0, deductions = 0 } = payroll;
+        return baseSalary + bonuses - deductions;
+      },
+    }
   }
 });
 app.engine(".hbs", hbs.engine);

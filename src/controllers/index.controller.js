@@ -183,3 +183,24 @@ export const updateUserSchedule = async (req, res) => {
     res.redirect("/admin/users");
   }
 };
+
+export const renderEmployeeProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).lean();
+    if (!user) {
+      req.flash("error_msg", "Usuario no encontrado.");
+      return res.redirect("/dashboard");
+    }
+
+    res.render("profile", {
+      user,
+      attendanceLogs: user.attendanceLogs || [],
+      schedule: user.schedule || [],
+      payrollInfo: user.payrollInfo || {},
+    });
+  } catch (error) {
+    console.error("Error al cargar perfil del empleado:", error);
+    req.flash("error_msg", "No se pudo cargar tu perfil.");
+    res.redirect("/dashboard");
+  }
+};
