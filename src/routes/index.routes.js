@@ -2,7 +2,8 @@ import { Router } from "express";
 import { renderIndex, renderAbout, renderInfo, renderScanner, 
          renderDashboard, renderRegistro, renderUsers, deleteUser, 
          updateUserInfo, renderUserProfile, updateUserSchedule, 
-         renderEmployeeProfile, renderAttendanceEditor, submitAttendance} from "../controllers/index.controller.js";
+         renderEmployeeProfile, renderAttendanceEditor, submitAttendance,
+         renderEmployeeAttendance} from "../controllers/index.controller.js";
 import { isAuthenticated, isAdmin } from "../helpers/auth.js";
 
 const router = Router();
@@ -23,11 +24,16 @@ router.get("/attendance", isAuthenticated, (req, res, next) => {
   req.flash("error_msg", "Acceso denegado.");
   return res.redirect("/dashboard");
 });
+router.get("/employee/attendance", isAuthenticated, (req, res, next) => {
+  if (req.user.role === "employee") return renderEmployeeAttendance(req, res);
+  req.flash("error_msg", "Acceso denegado.");
+  return res.redirect("/dashboard");
+});
 
 router.post("/user/:id/delete", isAuthenticated, isAdmin, deleteUser);
 router.post("/user/:id/update", isAuthenticated, isAdmin, updateUserInfo);
 router.post("/user/:id/schedule/update", isAuthenticated, isAdmin, updateUserSchedule);
-router.post("/supervisor/attendance", isAuthenticated, (req, res, next) => {
+router.post("/attendance", isAuthenticated, (req, res, next) => {
   if (req.user.role === "supervisor" || req.user.role === "admin") return submitAttendance(req, res);
   req.flash("error_msg", "Acceso denegado.");
   return res.redirect("/dashboard");
