@@ -1,14 +1,14 @@
-<div class="container mt-5">
-  <h2 class="mb-4">Registrar Asistencia de Empleados</h2>
+<div class="container mt-5 animate__animated animate__fadeIn">
+  <h2 class="fw-bold text-primary mb-4"><i class="bi bi-person-check me-2"></i>Registrar Asistencia de Empleados</h2>
 
   <form action="/attendance" method="POST">
     <div class="mb-4">
-      <label for="date" class="form-label">Fecha</label>
+      <label for="date" class="form-label text-secondary">Fecha</label>
       <input type="date" id="date" name="date" class="form-control" required>
     </div>
 
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
+    <div class="table-responsive shadow rounded-4 border border-2 mb-4">
+      <table class="table table-bordered table-striped align-middle">
         <thead class="table-light">
           <tr>
             <th>Nombre</th>
@@ -34,14 +34,21 @@
       </table>
     </div>
 
-    <div class="text-end mt-4">
+    <div class="d-flex justify-content-end">
       <button type="submit" class="btn btn-success">
-        Guardar Asistencia
+        <i class="bi bi-check-circle me-2"></i>Guardar Asistencia
       </button>
     </div>
   </form>
 
   <div class="text-center mt-4">
-    <a href="/dashboard" class="btn btn-secondary">Volver al Panel</a>
+    <a href="/dashboard" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Volver al Panel
+    </a>
   </div>
 </div>
+
+<script>
+  // Animación de fadeIn para el contenedor al cargar la página
+  document.querySelector('.container').classList.add('animate__animated', 'animate__fadeIn');
+</script>

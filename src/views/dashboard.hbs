@@ -85,10 +85,110 @@
         <div class="card shadow rounded-4 p-3 border-start border-5 border-success">
           <h5 class="card-title">Asistencia del equipo</h5>
             <p>Asistencias esta semana: {{metrics.attendanceThisWeek}}</p>
-          <a href="/attendance" class="btn btn-success mt-2">Ver asistencias</a>
+            <p>Días sin asistencia: {{metrics.absentDays}}</p>
+            <a href="/attendance" class="btn btn-success mt-2">Registrar asistencias</a>
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-warning">
+          <h5 class="card-title">Distribución de Asistencia</h5>
+          <canvas id="attendancePieChart" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <div class="card shadow rounded-4 p-3 border-start border-5 border-info">
+          <h5 class="card-title">Detalle de Asistencia</h5>
+          <div class="row">
+            <div class="col">
+              <h6 class="text-success fw-semibold">Asistieron</h6>
+              <ul class="list-group mb-3">
+                {{#each metrics.attendedEmployees}}
+                  <li class="list-group-item list-group-item-success">{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+            <div class="col">
+              <h6 class="text-danger fw-semibold">Ausentes</h6>
+              <ul class="list-group">
+                {{#each metrics.absentEmployees}}
+                  <li class="list-group-item list-group-item-danger">{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const attendanceData = {
+        present: {{metrics.attendanceThisWeek}},
+        absent: {{metrics.absentDays}},
+      };
+
+      const ctx = document.getElementById('attendancePieChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Asistidos', 'Ausentes'],
+          datasets: [{
+            data: [attendanceData.present, attendanceData.absent],
+            backgroundColor: ['#28a745', '#dc3545'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: { 
+              callbacks: {
+                label: function(tooltipItem) {
+                  return `${tooltipItem.label}: ${tooltipItem.raw} días`;
+                }
+              }
+            },
+            legend: {
+              position: 'top',
+            },
+          },
+        }
+      });
+    </script>
+
+    <script>
+      const attendanceData = {
+        labels: ['Asistidos', 'Ausentes'],
+        datasets: [{
+          data: [{{metrics.attendedEmployees.length}}, {{metrics.absentEmployees.length}}],
+          backgroundColor: ['#28a745', '#dc3545'],
+        }]
+      };
+
+      const ctx = document.getElementById('attendancePieChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: attendanceData,
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: { 
+              callbacks: {
+                label: function(tooltipItem) {
+                  return `${tooltipItem.label}: ${tooltipItem.raw} empleados`;
+                }
+              }
+            },
+            legend: {
+              position: 'top',
+            },
+          },
+        }
+      });
+    </script>
   {{/if}}
 
   {{!-- EMPLOYEE DASHBOARD --}}

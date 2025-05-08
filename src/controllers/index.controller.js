@@ -22,14 +22,25 @@ export const renderRegistro = (req, res) => {
 
 export const renderUsers = async (req, res) => {
   try {
-    const users = await User.find().lean(); // .lean() convierte los documentos de Mongoose a objetos planos
-    res.render("admin/users", { users });
+    let users = await User.find({ email: { $ne: "admin@localhost" } }).lean();
+
+    // Orden manual de roles
+    const rolePriority = { admin: 1, supervisor: 2, employee: 3 };
+    users.sort((a, b) => rolePriority[a.role] - rolePriority[b.role]);
+
+    const roleFilter = req.query.role;
+    if (roleFilter && ["admin", "supervisor", "employee"].includes(roleFilter)) {
+      users = users.filter(user => user.role === roleFilter);
+    }
+
+    res.render("admin/users", { users, selectedRole: roleFilter || "" });
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
     req.flash("error_msg", "No se pudieron cargar los usuarios.");
     res.redirect("/dashboard");
   }
 };
+
 export const renderDashboard = async (req, res) => {
   try {
     const role = req.user.role;
@@ -40,9 +51,7 @@ export const renderDashboard = async (req, res) => {
       const employees = users.filter(u => u.role === "employee");
       const supervisors = users.filter(u => u.role === "supervisor");
 
-      const currentMonth = new Date().getMonth();
       let totalPayments = 0;
-
       const payrollByEmployee = [];
 
       employees.forEach(emp => {
@@ -63,43 +72,64 @@ export const renderDashboard = async (req, res) => {
           totalPayments,
           activeSupervisors: supervisors.length,
         },
-        chartData: JSON.stringify(payrollByEmployee), // para usar en la gráfica
+        chartData: JSON.stringify(payrollByEmployee),
       });
+
     } else if (role === "supervisor") {
       const employees = await User.find({ role: "employee" }).lean();
-    
+
       const currentWeekStart = new Date();
       currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay()); // domingo
-    
-      let attendanceCount = 0;
-    
+
+      let attendanceThisWeek = 0;
+      let absentDays = 0;
+      const attendedEmployees = [];
+      const absentEmployees = [];
+
       employees.forEach(emp => {
-        (emp.attendanceLogs || []).forEach(log => {
-          const logDate = new Date(log.date);
-          if (logDate >= currentWeekStart) {
-            attendanceCount++;
-          }
-        });
+        const logs = emp.attendanceLogs || [];
+        const logsThisWeek = logs.filter(log => new Date(log.date) >= currentWeekStart);
+
+        if (logsThisWeek.length > 0) {
+          attendanceThisWeek += logsThisWeek.length;
+          attendedEmployees.push(emp.name);
+        } else {
+          absentDays++;
+          absentEmployees.push(emp.name);
+        }
       });
-    
+
       const teamSchedules = employees.map(emp => ({
         name: emp.name,
         status: (emp.schedule?.length ?? 0) > 0 ? "Asignada" : "Sin agenda"
       }));
-    
+
+      const attendanceData = {
+        labels: ['Asistieron', 'Ausentes'],
+        datasets: [{
+          data: [attendedEmployees.length, absentEmployees.length],
+          backgroundColor: ['#28a745', '#dc3545'],
+        }],
+      };
+
       res.render("dashboard", {
         user: req.user,
         metrics: {
-          attendanceThisWeek: attendanceCount
+          attendanceThisWeek,
+          absentDays,
+          attendedEmployees,
+          absentEmployees,
         },
-        teamSchedules
+        teamSchedules,
+        attendanceData: JSON.stringify(attendanceData),
       });
+
     } else if (role === "employee") {
       const logs = req.user.attendanceLogs || [];
-    
+
       const uniqueDays = new Set();
       let totalHours = 0;
-    
+
       logs.forEach(log => {
         const date = new Date(log.date).toDateString();
         uniqueDays.add(date);
@@ -113,16 +143,14 @@ export const renderDashboard = async (req, res) => {
         return d.toDateString();
       });
 
-      const attendanceLogs = req.user.attendanceLogs || [];
-
       const attendanceChart = last7Days.map(day => {
-        const log = attendanceLogs.find(l => new Date(l.date).toDateString() === day);
+        const log = logs.find(l => new Date(l.date).toDateString() === day);
         return {
           day: day.slice(0, 10),
           hours: log?.hoursWorked || 0,
         };
       });
-    
+
       res.render("dashboard", {
         user: req.user,
         metrics: {
@@ -132,6 +160,7 @@ export const renderDashboard = async (req, res) => {
         userSchedule: req.user.schedule || [],
         employeeAttendanceChartData: JSON.stringify(attendanceChart),
       });
+
     }
   } catch (err) {
     console.error("Error al renderizar dashboard:", err);
@@ -139,6 +168,7 @@ export const renderDashboard = async (req, res) => {
     res.redirect("/");
   }
 };
+
 
 // Muestra el perfil de un usuario específico
 export const renderUserProfile = async (req, res) => {

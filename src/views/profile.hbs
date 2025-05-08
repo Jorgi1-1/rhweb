@@ -1,74 +1,78 @@
-<div class="container mt-5">
+<div class="container mt-5 animate__animated animate__fadeIn">
   <div class="text-center mb-4">
     <h2 class="fw-bold">Mi Perfil</h2>
     <p class="text-muted">Bienvenido, {{user.name}} ({{user.role}})</p>
   </div>
 
-  <div class="card shadow rounded-4 p-4 mb-4">
+  <div class="card shadow-lg rounded-4 p-4 mb-4 border-start border-5 border-primary">
     <h4 class="text-primary mb-3"><i class="bi bi-cash-coin me-2"></i>Resumen de Nómina</h4>
-    <ul class="list-group">
+    <ul class="list-group list-group-flush">
       <li class="list-group-item">Sueldo base: ${{payrollInfo.baseSalary}}</li>
       <li class="list-group-item">Bonos: ${{payrollInfo.bonuses}}</li>
       <li class="list-group-item">Deducciones: ${{payrollInfo.deductions}}</li>
-      <li class="list-group-item fw-bold">Sueldo neto: ${{calcNetSalary payrollInfo}}</li>
+      <li class="list-group-item fw-bold text-success">Sueldo neto: ${{calcNetSalary payrollInfo}}</li>
     </ul>
   </div>
 
-  <div class="card shadow rounded-4 p-4 mb-4">
+  <div class="card shadow-lg rounded-4 p-4 mb-4 border-start border-5 border-success">
     <h4 class="text-success mb-3"><i class="bi bi-calendar-week me-2"></i>Mi Agenda</h4>
     {{#if schedule.length}}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Día</th>
-            <th>Hora de Entrada</th>
-            <th>Hora de Salida</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each schedule}}
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{this.day}}</td>
-              <td>{{this.startTime}}</td>
-              <td>{{this.endTime}}</td>
+              <th>Día</th>
+              <th>Hora de Entrada</th>
+              <th>Hora de Salida</th>
             </tr>
-          {{/each}}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {{#each schedule}}
+              <tr>
+                <td>{{this.day}}</td>
+                <td>{{this.startTime}}</td>
+                <td>{{this.endTime}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
     {{else}}
       <p class="text-muted">No tienes horarios asignados aún.</p>
     {{/if}}
   </div>
 
-  <div class="card shadow rounded-4 p-4 mb-4">
+  <div class="card shadow-lg rounded-4 p-4 mb-4 border-start border-5 border-info">
     <h4 class="text-info mb-3"><i class="bi bi-clock-history me-2"></i>Mi Asistencia</h4>
     {{#if attendanceLogs.length}}
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Entrada</th>
-            <th>Salida</th>
-            <th>Horas trabajadas</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each attendanceLogs}}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{this.date}}</td>
-              <td>{{this.checkIn}}</td>
-              <td>{{this.checkOut}}</td>
-              <td>{{this.hoursWorked}}</td>
+              <th>Fecha</th>
+              <th>Entrada</th>
+              <th>Salida</th>
+              <th>Horas trabajadas</th>
             </tr>
-          {{/each}}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {{#each attendanceLogs}}
+              <tr>
+                <td>{{this.date}}</td>
+                <td>{{this.checkIn}}</td>
+                <td>{{this.checkOut}}</td>
+                <td>{{this.hoursWorked}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
     {{else}}
       <p class="text-muted">Aún no hay registros de asistencia.</p>
     {{/if}}
   </div>
 
   <div class="text-center">
-    <a href="/dashboard" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i>Volver al Panel</a>
+    <a href="/dashboard" class="btn btn-outline-secondary btn-lg"><i class="bi bi-arrow-left me-2"></i>Volver al Panel</a>
   </div>
 </div>

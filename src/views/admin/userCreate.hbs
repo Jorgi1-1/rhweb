@@ -1,7 +1,7 @@
-<div class="container mt-5">
+<div class="container mt-5 animate__animated animate__fadeIn">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <h2 class="text-center mb-4">Registrar Nuevo Usuario</h2>
+      <h2 class="text-center mb-4 fw-bold text-primary">Registrar Nuevo Usuario</h2>
 
       {{#if errors}}
         <div class="alert alert-danger">
@@ -55,7 +55,7 @@
         </div>
 
         <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Registrar</button>
+          <button type="submit" class="btn btn-primary btn-lg fw-bold">Registrar</button>
         </div>
       </form>
 
@@ -65,3 +65,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Animación de transición suave para los campos
+  const inputs = document.querySelectorAll('.form-control, .form-select');
+  inputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      input.classList.add('animate__animated', 'animate__pulse');
+    });
+
+    input.addEventListener('blur', () => {
+      input.classList.remove('animate__animated', 'animate__pulse');
+    });
+  });
+</script>
