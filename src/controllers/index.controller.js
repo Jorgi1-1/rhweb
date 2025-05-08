@@ -128,3 +128,58 @@ export const updateUserInfo = async (req, res) => {
     res.redirect("/admin/users");
   }
 };
+
+export const updateUserSchedule = async (req, res) => {
+  try {
+    let { existingDays = [], startTimes = [], endTimes = [], deleteDays = [], newDay, newStartTime, newEndTime } = req.body;
+
+    existingDays = Array.isArray(existingDays) ? existingDays : existingDays ? [existingDays] : [];
+    startTimes = Array.isArray(startTimes) ? startTimes : startTimes ? [startTimes] : [];
+    endTimes = Array.isArray(endTimes) ? endTimes : endTimes ? [endTimes] : [];
+
+    // Asegurar que deleteDays sea un array
+    if (typeof deleteDays === "string") {
+      deleteDays = [deleteDays];
+    } else if (!Array.isArray(deleteDays)) {
+      deleteDays = [];
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      req.flash("error_msg", "Usuario no encontrado.");
+      return res.redirect("/admin/users");
+    }
+
+    const scheduleMap = {};
+
+    // Procesar días existentes con forEach para evitar inconsistencias de índice
+    existingDays.forEach((day, index) => {
+      if (!deleteDays.includes(day)) {
+        scheduleMap[day] = {
+          day,
+          startTime: startTimes[index] || "",
+          endTime: endTimes[index] || "",
+        };
+      }
+    });
+
+    // Agregar nuevo día si no está repetido
+    if (newDay && newStartTime && newEndTime && !scheduleMap[newDay]) {
+      scheduleMap[newDay] = {
+        day: newDay,
+        startTime: newStartTime,
+        endTime: newEndTime,
+      };
+    }
+
+    user.schedule = Object.values(scheduleMap);
+    await user.save();
+
+    req.flash("success_msg", "Agenda actualizada correctamente.");
+    res.redirect(`/user/${user._id}`);
+  } catch (error) {
+    console.error("Error al actualizar agenda:", error);
+    req.flash("error_msg", "No se pudo actualizar la agenda.");
+    res.redirect("/admin/users");
+  }
+};

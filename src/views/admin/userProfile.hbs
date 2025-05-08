@@ -103,6 +103,52 @@
         </div>
       </form>
 
+      <h4 class="mt-5">Agenda de Trabajo</h4>
+    <form action="/user/{{user._id}}/schedule/update" method="POST">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Día</th>
+            <th>Hora de Inicio</th>
+            <th>Hora de Fin</th>
+            <th>Eliminar</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each user.schedule}}
+            <tr>
+            <td>
+                <input type="hidden" name="existingDays[]" value="{{this.day}}" />
+                <input class="form-control" type="text" value="{{this.day}}" disabled />
+            </td>
+            <td><input type="time" class="form-control" name="startTimes[]" value="{{this.startTime}}" required /></td>
+            <td><input type="time" class="form-control" name="endTimes[]" value="{{this.endTime}}" required /></td>
+            <td><input type="checkbox" name="deleteDays[]" value="{{this.day}}" /></td>
+            </tr>
+        {{/each}}
+
+        <tr>
+            <td>
+            <select name="newDay" class="form-control">
+                <option value="">— Día nuevo —</option>
+                <option value="Monday">Lunes</option>
+                <option value="Tuesday">Martes</option>
+                <option value="Wednesday">Miércoles</option>
+                <option value="Thursday">Jueves</option>
+                <option value="Friday">Viernes</option>
+                <option value="Saturday">Sábado</option>
+                <option value="Sunday">Domingo</option>
+            </select>
+            </td>
+            <td><input type="time" class="form-control" name="newStartTime" /></td>
+            <td><input type="time" class="form-control" name="newEndTime" /></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-primary" type="submit">Guardar Agenda</button>
+    </form>
+
       <div class="mt-4 border-top pt-3">
         <div class="alert alert-danger d-flex align-items-center" role="alert">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
