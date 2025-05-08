@@ -30,35 +30,114 @@ export const renderUsers = async (req, res) => {
     res.redirect("/dashboard");
   }
 };
+export const renderDashboard = async (req, res) => {
+  try {
+    const role = req.user.role;
 
-export const renderDashboard = (req, res) => {
-  const role = req.user.role;
+    if (role === "admin") {
+      const users = await User.find().lean();
 
-  // Datos de ejemplo — deberías reemplazarlos con datos reales de tu base
-  const metrics = {
-    totalEmployees: 58,
-    totalPayments: 120000,
-    activeSupervisors: 6,
-    attendanceThisWeek: 45,
-    daysPresent: 18,
-  };
+      const employees = users.filter(u => u.role === "employee");
+      const supervisors = users.filter(u => u.role === "supervisor");
 
-  const teamSchedules = [
-    { name: "Juan Pérez", status: "Completada" },
-    { name: "Ana Ruiz", status: "Pendiente" },
-  ];
+      const currentMonth = new Date().getMonth();
+      let totalPayments = 0;
 
-  const userSchedule = [
-    { date: "2025-05-06", task: "Reunión de equipo" },
-    { date: "2025-05-07", task: "Tarea asignada" },
-  ];
+      const payrollByEmployee = [];
 
-  res.render("dashboard", {
-    user: req.user,
-    metrics,
-    teamSchedules: role === "supervisor" ? teamSchedules : null,
-    userSchedule: role === "employee" ? userSchedule : null,
-  });
+      employees.forEach(emp => {
+        const payroll = emp.payrollInfo || {};
+        const base = Number(payroll.baseSalary) || 0;
+        const bonuses = Number(payroll.bonuses) || 0;
+        const deductions = Number(payroll.deductions) || 0;
+        const net = base + bonuses - deductions;
+        totalPayments += net;
+
+        payrollByEmployee.push({ name: emp.name, payment: net });
+      });
+
+      res.render("dashboard", {
+        user: req.user,
+        metrics: {
+          totalEmployees: employees.length,
+          totalPayments,
+          activeSupervisors: supervisors.length,
+        },
+        chartData: JSON.stringify(payrollByEmployee), // para usar en la gráfica
+      });
+    } else if (role === "supervisor") {
+      const employees = await User.find({ role: "employee" }).lean();
+    
+      const currentWeekStart = new Date();
+      currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay()); // domingo
+    
+      let attendanceCount = 0;
+    
+      employees.forEach(emp => {
+        (emp.attendanceLogs || []).forEach(log => {
+          const logDate = new Date(log.date);
+          if (logDate >= currentWeekStart) {
+            attendanceCount++;
+          }
+        });
+      });
+    
+      const teamSchedules = employees.map(emp => ({
+        name: emp.name,
+        status: (emp.schedule?.length ?? 0) > 0 ? "Asignada" : "Sin agenda"
+      }));
+    
+      res.render("dashboard", {
+        user: req.user,
+        metrics: {
+          attendanceThisWeek: attendanceCount
+        },
+        teamSchedules
+      });
+    } else if (role === "employee") {
+      const logs = req.user.attendanceLogs || [];
+    
+      const uniqueDays = new Set();
+      let totalHours = 0;
+    
+      logs.forEach(log => {
+        const date = new Date(log.date).toDateString();
+        uniqueDays.add(date);
+        totalHours += log.hoursWorked || 0;
+      });
+
+      const now = new Date();
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(now);
+        d.setDate(d.getDate() - (6 - i));
+        return d.toDateString();
+      });
+
+      const attendanceLogs = req.user.attendanceLogs || [];
+
+      const attendanceChart = last7Days.map(day => {
+        const log = attendanceLogs.find(l => new Date(l.date).toDateString() === day);
+        return {
+          day: day.slice(0, 10),
+          hours: log?.hoursWorked || 0,
+        };
+      });
+    
+      res.render("dashboard", {
+        user: req.user,
+        metrics: {
+          daysPresent: uniqueDays.size,
+          totalHoursWorked: totalHours.toFixed(2),
+        },
+        userSchedule: req.user.schedule || [],
+        employeeAttendanceChartData: JSON.stringify(attendanceChart),
+      });
+    }
+  } catch (err) {
+    console.error("Error al renderizar dashboard:", err);
+    req.flash("error_msg", "No se pudo cargar el panel.");
+    res.redirect("/");
+  }
 };
 
 // Muestra el perfil de un usuario específico
@@ -268,10 +347,28 @@ export const submitAttendance = async (req, res) => {
     }
 
     req.flash("success_msg", "Asistencia guardada correctamente.");
-    res.redirect("/supervisor/attendance");
+    res.redirect("/attendance");
   } catch (error) {
     console.error("Error al guardar asistencia:", error);
     req.flash("error_msg", "Error al registrar la asistencia.");
+    res.redirect("/dashboard");
+  }
+};
+
+export const renderEmployeeAttendance = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).lean();
+    if (!user) {
+      req.flash("error_msg", "No se pudo cargar tu historial.");
+      return res.redirect("/dashboard");
+    }
+
+    res.render("employee/attendance", {
+      attendanceLogs: user.attendanceLogs || [],
+    });
+  } catch (error) {
+    console.error("Error al mostrar asistencia del empleado:", error);
+    req.flash("error_msg", "Error al cargar tu historial.");
     res.redirect("/dashboard");
   }
 };

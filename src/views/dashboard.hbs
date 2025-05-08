@@ -29,6 +29,43 @@
     <div class="mt-4">
       <a href="/admin/users" class="btn btn-outline-primary">Gestionar Usuarios</a>
     </div>
+    <div class="mt-5">
+  <h4 class="mb-3">Distribución de pagos por empleado</h4>
+  <canvas id="paymentChart" height="100"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const chartData = {{{chartData}}}; // pasa como objeto JSON
+
+  const ctx = document.getElementById("paymentChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: chartData.map(e => e.name),
+      datasets: [{
+        label: 'Pago neto ($)',
+        data: chartData.map(e => e.payment),
+        backgroundColor: '#0d6efd',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: ctx => `$${ctx.raw}`
+        }}
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { callback: v => `$${v}` }
+        }
+      }
+    }
+  });
+</script>
   {{/if}}
 
   {{!-- SUPERVISOR DASHBOARD --}}
@@ -47,8 +84,8 @@
       <div class="col-md-6 mb-3">
         <div class="card shadow rounded-4 p-3 border-start border-5 border-success">
           <h5 class="card-title">Asistencia del equipo</h5>
-          <p>Asistencias esta semana: {{metrics.attendanceThisWeek}}</p>
-          <a href="/supervisor/attendance" class="btn btn-success mt-2">Ver asistencias</a>
+            <p>Asistencias esta semana: {{metrics.attendanceThisWeek}}</p>
+          <a href="/attendance" class="btn btn-success mt-2">Ver asistencias</a>
         </div>
       </div>
     </div>
@@ -60,19 +97,66 @@
       <div class="col-md-6 mb-3">
         <div class="card shadow rounded-4 p-3 border-start border-5 border-info">
           <h5 class="card-title">Mi agenda</h5>
-          <ul class="list-group">
-            {{#each userSchedule}}
-              <li class="list-group-item">{{this.date}} – {{this.task}}</li>
-            {{/each}}
-          </ul>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Día</th>
+                  <th>Hora de entrada</th>
+                  <th>Hora de salida</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each userSchedule}}
+                  <tr>
+                    <td><i class="bi bi-calendar-event me-1"></i>{{this.day}}</td>
+                    <td>{{this.startTime}}</td>
+                    <td>{{this.endTime}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="col-md-6 mb-3">
         <div class="card shadow rounded-4 p-3 border-start border-5 border-secondary">
           <h5 class="card-title">Asistencia personal</h5>
           <p>Días asistidos este mes: {{metrics.daysPresent}}</p>
+          <p>Total de horas trabajadas: {{metrics.totalHoursWorked}}</p>
           <a href="/employee/attendance" class="btn btn-info mt-2">Ver historial</a>
         </div>
+        <div class="card shadow rounded-4 p-4 mt-4">
+          <h5 class="mb-3">Asistencia semanal</h5>
+          <canvas id="personalAttendanceChart" height="100"></canvas>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+          const personalData = {{{employeeAttendanceChartData}}};
+
+          const personalCtx = document.getElementById("personalAttendanceChart").getContext("2d");
+          new Chart(personalCtx, {
+            type: "bar",
+            data: {
+              labels: personalData.map(e => e.day),
+              datasets: [{
+                label: 'Horas trabajadas',
+                data: personalData.map(e => e.hours),
+                backgroundColor: '#6f42c1'
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: { display: true, text: 'Horas' }
+                }
+              }
+            }
+          });
+        </script>
       </div>
     </div>
   {{/if}}
