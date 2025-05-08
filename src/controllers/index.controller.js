@@ -204,3 +204,74 @@ export const renderEmployeeProfile = async (req, res) => {
     res.redirect("/dashboard");
   }
 };
+
+export const renderAttendanceEditor = async (req, res) => {
+  try {
+    const employees = await User.find({ role: "employee" }).lean();
+    res.render("attendance", { employees });
+  } catch (error) {
+    console.error("Error al cargar empleados:", error);
+    req.flash("error_msg", "No se pudo cargar la asistencia.");
+    res.redirect("/dashboard");
+  }
+};
+
+export const submitAttendance = async (req, res) => {
+  try {
+    const { date, checkIn = {}, checkOut = {} } = req.body;
+
+    const employeeIds = Object.keys(checkIn);
+    console.log("Datos recibidos:", req.body);
+
+    for (let id of employeeIds) {
+      const inTime = checkIn[id];
+      const outTime = checkOut[id];
+    
+      // Si no hay hora de entrada o salida, no guardar nada
+      if (!inTime && !outTime) continue;
+    
+      const user = await User.findById(id);
+      if (!user) continue;
+    
+      const attendanceDate = new Date(date);
+      const existingLog = user.attendanceLogs.find(log =>
+        new Date(log.date).toDateString() === attendanceDate.toDateString()
+      );
+    
+      if (existingLog) {
+        if (inTime) existingLog.checkIn = inTime;
+        if (outTime) existingLog.checkOut = outTime;
+    
+        if (existingLog.checkIn && existingLog.checkOut) {
+          const [inHour, inMin] = existingLog.checkIn.split(":").map(Number);
+          const [outHour, outMin] = existingLog.checkOut.split(":").map(Number);
+          const worked = (outHour * 60 + outMin - (inHour * 60 + inMin)) / 60;
+          existingLog.hoursWorked = Math.max(worked, 0);
+        }
+      } else {
+        let hoursWorked = 0;
+        if (inTime && outTime) {
+          const [inHour, inMin] = inTime.split(":").map(Number);
+          const [outHour, outMin] = outTime.split(":").map(Number);
+          hoursWorked = Math.max((outHour * 60 + outMin - (inHour * 60 + inMin)) / 60, 0);
+        }
+    
+        user.attendanceLogs.push({
+          date: attendanceDate,
+          checkIn: inTime,
+          checkOut: outTime,
+          hoursWorked,
+        });
+      }
+    
+      await user.save();
+    }
+
+    req.flash("success_msg", "Asistencia guardada correctamente.");
+    res.redirect("/supervisor/attendance");
+  } catch (error) {
+    console.error("Error al guardar asistencia:", error);
+    req.flash("error_msg", "Error al registrar la asistencia.");
+    res.redirect("/dashboard");
+  }
+};

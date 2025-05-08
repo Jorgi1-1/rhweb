@@ -1,0 +1,47 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Registrar Asistencia de Empleados</h2>
+
+  <form action="/supervisor/attendance" method="POST">
+    <div class="mb-4">
+      <label for="date" class="form-label">Fecha</label>
+      <input type="date" id="date" name="date" class="form-control" required>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Hora de Entrada</th>
+            <th>Hora de Salida</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each employees}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.email}}</td>
+              <td>
+                <input type="time" class="form-control" name="checkIn[{{this._id}}]">
+              </td>
+              <td>
+                <input type="time" class="form-control" name="checkOut[{{this._id}}]">
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-end mt-4">
+      <button type="submit" class="btn btn-success">
+        Guardar Asistencia
+      </button>
+    </div>
+  </form>
+
+  <div class="text-center mt-4">
+    <a href="/dashboard" class="btn btn-secondary">Volver al Panel</a>
+  </div>
+</div>

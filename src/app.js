@@ -62,7 +62,7 @@ Handlebars.registerHelper("eq", function (a, b) {
 
 // middlewares
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(
   session({
