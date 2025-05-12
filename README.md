@@ -7,8 +7,6 @@ RHWeb es una aplicación web desarrollada con Node.js, Express y MongoDB para ge
 - [Tecnologías Utilizadas](#tecnologías-utilizadas)
 - [Instalación](#instalación)
 - [Estructura de Roles](#estructura-de-roles)
-- [Capturas de Pantalla](#capturas-de-pantalla)
-- [Créditos](#créditos)
 
 
 ## Características
