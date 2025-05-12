@@ -66,7 +66,7 @@ npm run dev
 ```
 
 
-Estructura de Roles
+## Estructura de Roles
 • Administrador
 	•	Puede crear, editar y eliminar usuarios
 	•	Gestiona información de nómina y horarios
