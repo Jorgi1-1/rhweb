@@ -67,15 +67,16 @@ npm run dev
 
 
 ## Estructura de Roles
-• Administrador
+
+### Administrador
 	•	Puede crear, editar y eliminar usuarios
 	•	Gestiona información de nómina y horarios
 	•	Visualiza dashboards con métricas globales
-•	Supervisor
+### Supervisor
 	•	Visualiza empleados y agendas
 	•	Registra asistencia del personal
 	•	Consulta métricas de desempeño semanal
-•	Empleado
+### Empleado
 	•	Consulta su horario
 	•	Visualiza su historial de asistencia
 	•	Consulta su información de nómina
