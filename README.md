@@ -47,7 +47,7 @@ RHWeb es una aplicación web desarrollada con Node.js, Express y MongoDB para ge
 1. Clona el repositorio:
 
 ```bash
-git clone https://github.com/tuusuario/rhweb.git
+git clone https://github.com/Jorgi1-1/rhweb.git
 cd rhweb
 ```
 2.	Instala las dependencias:
