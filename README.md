@@ -80,3 +80,9 @@ npm run dev
 - Consulta su horario
 - Visualiza su historial de asistencia
 - Consulta su información de nómina
+
+## Sitio en Producción
+
+Puedes acceder a la aplicación desplegada en:
+
+[https://rhweb-pt20.onrender.com](https://rhweb-pt20.onrender.com)
