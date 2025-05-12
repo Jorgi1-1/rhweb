@@ -56,15 +56,16 @@ cd rhweb
 
 npm install
 
-	3.	Crea un archivo .env (si es necesario) para configurar tus credenciales de MongoDB Atlas y otras variables de entorno:
+	3.	Crea un archivo .env para configurar tus credenciales de MongoDB.
 
 MONGODB_URI=mongodb+srv://<usuario>:<contraseña>@cluster.mongodb.net/rhweb
-SESSION_SECRET=algún_secreto_seguro
+PORT=3000
+NODE_ENV=development
 
 	4.	Ejecuta la aplicación:
 
 npm run dev
-bash```
+```
 
 
 Estructura de Roles
