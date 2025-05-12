@@ -49,19 +49,19 @@ RHWeb es una aplicación web desarrollada con Node.js, Express y MongoDB para ge
 ```bash
 git clone https://github.com/tuusuario/rhweb.git
 cd rhweb
-
+```
 	2.	Instala las dependencias:
-
+```bash
 npm install
-
+```
 	3.	Crea un archivo .env para configurar tus credenciales de MongoDB.
-
+```bash
 MONGODB_URI=mongodb+srv://<usuario>:<contraseña>@cluster.mongodb.net/rhweb
 PORT=3000
 NODE_ENV=development
-
+```
 	4.	Ejecuta la aplicación:
-
+```bash
 npm run dev
 ```
 
